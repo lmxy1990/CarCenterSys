@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.pan.car.dao.UserDao">
+	<!-- 新增客户 -->
+	<insert id="addUser" parameterType="userModel">
+		insert into user_info_tab
+		(userName,userPassword,userUnit,userTel,userMile,userNo)
+		values
+		(#{userName},#{userPassword},#{userUnit},#{userTel},#{userMile},#{userNo})
+	</insert>
+	<!-- 客户信息变更 -->
+	<update id="modifyUser" parameterType="userModel">
+		update user_info_tab
+		<set>
+			<if test="userName != null">userName = #{userName},</if>
+			<if test="userPassword != null">userPassword = #{userPassword},</if>
+			<if test="userUnit != null">userUnit = #{userUnit},</if>
+			<if test="userTel != null">userTel = #{userTel},</if>
+			<if test="userMile != null">userMile = #{userMile},</if>
+			<if test="userNo!=null">userNo = #{userNo},</if>
+		</set>
+		<where>
+			id = #{id}
+		</where>
+	</update>
+	<!-- 删除客户 -->
+	<delete id="delUser" parameterType="Long">
+		delete from user_info_tab
+		where id = #{_parameter}
+	</delete>
+	<!-- 查询用户 -->
+	<select id="selectUser" parameterType="String" resultType="userModel">
+		select * from user_info_tab where userName = #{userName}
+	</select>
+	<!-- 模糊查询用户 -->
+	<select id="selectUserByFind" parameterType="userModel"
+		resultType="userModel">
+		select * from user_info_tab
+		<where>
+			<if test="userName != null">userName like #{userName}</if>
+			<if test="userNo != null">and userNo like #{userNo}</if>
+			<if test="id != null"> and userNo = #{id}</if>
+		</where>
+	</select>
+	<!-- 列出用户 -->
+	<select id="listUser" parameterType="userModel" resultType="userModel">
+		select * from user_info_tab order by id
+		<if test="end != null">
+			limit #{start},#{end}
+		</if>
+	</select>
+	<!-- 查询用户总数 -->
+	<select id="getUserSum" resultType="Integer">
+		select count(id) from
+		user_info_tab
+	</select>
+	<!-- 根据用户id查询用户的里程数 -->
+	<select id="selectMileage" parameterType="Long" resultType="Integer">
+		select userMile from user_info_tab where id=#{_parameter}
+	</select>
+	<!-- 根据用户id查询用户信息 -->
+	<select id="getUser" parameterType="Long" resultType="userModel">
+		select userName,userNo from user_info_tab where id=#{_parameter}
+	</select>
+</mapper>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pan.car.dao.ConsumeDao">
+	<!-- 新增消费 -->
+	<insert id="addConsume" parameterType="consumeModel">
+		insert into
+		consume_info_tab
+		(userId,serviceId,remarks,stateId,consumeTime,realPrice,adminId)
+		values
+		(#{userId},#{serviceId},#{remarks},#{stateId},#{consumeTime},#{realPrice},#{adminId})
+	</insert>
+	<!-- 消费信息变更 -->
+	<update id="modifyConsume" parameterType="consumeModel">
+		update consume_info_tab
+		<set>
+			<if test="userId != null">userId = #{userId},</if>
+			<if test="serviceId != null">serviceId = #{serviceId},</if>
+			<if test="remarks != null">remarks = #{remarks},</if>
+			<if test="stateId != null">stateId = #{stateId},</if>
+			<if test="consumeTime != null">consumeTime = #{consumeTime},</if>
+			<if test="realPrice != null">realPrice = #{realPrice},</if>
+			<if test="adminId != null">adminId = #{adminId}</if>
+		</set>
+		<where>
+			<if test="id != null">id = #{id}</if>
+			<if test="userId != null">userId = #{userId}</if>
+			<if test="stateIdOld != null">and stateId = #{stateIdOld}</if>
+		</where>
+	</update>
+	<!-- 删除消费信息 -->
+	<delete id="delConsume" parameterType="Long">
+		delete from
+		consume_info_tab where id = #{_parameter}
+	</delete>
+	<!-- 根据用户id&用户状态查询消费信息 -->
+	<select id="selectConsumeByUser" parameterType="consumeModel"
+		resultType="consumeModel">
+		select
+		c.id,s.serviceName,s.servicePrice,c.realPrice,c.consumeTime,c.remarks,m.adminName,st.stateName
+		from consume_info_tab c
+		inner join manage_info_tab m on m.id =
+		c.adminId
+		inner join service_info_tab s on s.id = c.serviceId
+		inner join
+		service_state_tab st on st.id = c.stateId
+		<where>
+			<if test="userId != null">
+				and c.userId = #{userId}
+			</if>
+			<if test="stateId !=null">
+				and c.stateId = #{stateId}
+			</if>
+		</where>
+		order by c.id
+		limit #{start},#{end}
+	</select>
+	<!-- 根据状态查询消费信息 -->
+	<select id="selectConsumeByClass" parameterType="consumeModel"
+		resultType="consumeModel">
+		select
+		c.id,s.serviceName,s.servicePrice,c.realPrice,c.consumeTime,c.remarks,m.adminName,u.userName
+		from consume_info_tab c
+		inner join manage_info_tab m on m.id =
+		c.adminId
+		inner join service_info_tab s on s.id = c.serviceId
+		inner join
+		user_info_tab u on u.id = c.userId
+		where c.stateId = #{stateId}
+		order by
+		c.id
+		limit #{start},#{end}
+	</select>
+	<!-- 统计消费金额 -->
+	<select id="getStatistics" parameterType="consumeModel"
+		resultType="statisticsModel">
+		select count(id) as countOrder,sum(realPrice) as sumMoney from
+		consume_info_tab
+		<where>
+			<if test="userId != null">
+				userId = #{userId}
+			</if>
+			<if test="stateId != null">
+				and stateId = #{stateId}
+			</if>
+		</where>
+	</select>
+	<!-- 查询预约信息的数量 -->
+	<select id="getReserveCount" parameterType="Integer" resultType="Long">
+		select count(id) from
+		consume_info_tab
+		<if test="_parameter != null">
+			where stateId = #{_parameter}
+		</if>
+	</select>
+	<!-- 查询所有正在修理的订单,并根据用户分类 -->
+	<select id="selectState" parameterType="Integer" resultType="repairModel">
+		select c.userId,u.userName,count(c.serviceId) as repairCount
+		,sum(c.realPrice) as costMoney from
+		consume_info_tab c
+		inner join
+		user_info_tab u on u.id=c.userId
+		<if test="_parameter != null">
+			where stateId = #{_parameter}
+		</if>
+		group by c.userId
+	</select>
+	<!-- 根据用户id查询用户信息 -->
+	<select id="getUser" parameterType="Long" resultType="userModel">
+		select
+		userName,userNo from user_info_tab where id=#{_parameter}
+	</select>
+</mapper>

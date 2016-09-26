@@ -1,0 +1,11 @@
+
+
+1. 客户端主页地址:http://localhost:8080/CarCenterSys/
+
+
+2.管理员登录地址:http://localhost:8080/CarCenterSys/admin/adminPage.html
+
+
+3.初始管理员默认帐号admin,密码123456
+
+4.数据库脚本为task文件夹下的脚本文件.

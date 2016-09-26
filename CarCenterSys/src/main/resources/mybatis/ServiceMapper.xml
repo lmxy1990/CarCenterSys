@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+    
+    <mapper namespace="com.pan.car.dao.ServiceDao">
+    <!-- 新增服务 -->
+    <insert id="addService" parameterType="serviceModel">
+    	insert into service_info_tab (serviceName,servicePrice,canReserve,serviceDescribe)
+    	values 
+    	(#{serviceName},#{servicePrice},#{canReserve},#{serviceDescribe})
+    </insert>
+    <!-- 修改服务 -->
+    <update id="modifyService" parameterType="serviceModel">
+    	update service_info_tab
+    	<set>
+    		<if test="serviceName != null" >serviceName=#{serviceName}</if>
+    		<if test="servicePrice != null" >servicePrice=#{servicePrice}</if>
+    		<if test="canReserve != null" >canReserve=#{canReserve}</if>
+    		<if test="serviceDescribe != null" >serviceDescribe=#{serviceDescribe}</if>
+    	</set>
+    	<where>
+    		id = #{id}
+    	</where>
+    </update>
+    <!-- 删除服务 -->
+    <delete id="delService" parameterType="Integer">
+    	delete from service_info_tab where id = #{id}
+    </delete>
+    <!-- 查询服务 -->
+    <select id="listService" resultType="serviceModel">
+    	select * from service_info_tab 
+    </select>
+    <!-- 查询能预订的服务 -->
+     <select id="listServiceByClass"  parameterType="Integer" resultType="serviceModel">
+    	select * from service_info_tab where canReserve = #{canReserve}
+    </select>
+    </mapper>

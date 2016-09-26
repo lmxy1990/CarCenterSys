@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.pan.car.dao.AdminDao">
+	<!-- 新增管理员 -->
+	<insert id="addAdmin" parameterType="adminModel">
+		insert into manage_info_tab
+		(adminName,adminPassword,adminPower,adminRealName)
+		values
+		(#{adminName},#{adminPassword},#{adminPower},#{adminRealName})
+	</insert>
+	<!-- 管理员信息变更 -->
+	<update id="modifyAdmin" parameterType="adminModel">
+		update manage_info_tab
+		<set>
+			<if test="adminName != null">adminName = #{adminName},</if>
+			<if test="adminPassword != null">adminPassword = #{adminPassword},</if>
+			<if test="adminPower != null">adminPower = #{adminPower},</if>
+			<if test="adminRealName != null">adminRealName = #{adminRealName}</if>
+		</set>
+		where id = #{id}
+	</update>
+	<!-- 删除管理员 -->
+	<delete id="delAdmin" parameterType="Integer">
+		delete from manage_info_tab where id = #{id}
+	</delete>
+	<!-- 查询管理员 -->
+	<select id="selectAdmin" parameterType="String" resultType="adminModel">
+		select * from manage_info_tab where adminName = #{adminName}
+	</select>
+	<!-- 列出管理员 -->
+	<select id="listAdmin" resultType="adminModel">
+		select * from manage_info_tab
+	</select>
+</mapper>

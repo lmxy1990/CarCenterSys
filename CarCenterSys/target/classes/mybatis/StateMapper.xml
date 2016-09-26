@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.pan.car.dao.StateDao">
+	<!-- 新增状态 -->
+	<insert id="addState" parameterType="stateModel">
+		insert into service_state_tab (stateName) values (#{stateName})
+	</insert>
+	<!-- 变更状态 -->
+	<update id="modifyState" parameterType="stateModel">
+		update service_state_tab
+		<set>
+			<if test="stateName != null">stateName = #{stateName}</if>
+		</set>
+		<where>
+			id = #{id}
+		</where>
+	</update>
+	<!-- 删除状态 -->
+	<delete id="delState" parameterType="Integer">
+		delete from service_state_tab where id = #{id}
+	</delete>
+	<!-- 列出状态 -->
+	<select id="listState" resultType = "stateModel">
+		select * from service_state_tab 
+	</select>
+</mapper>
